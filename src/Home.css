@@ -64,81 +64,6 @@ input:focus-visible {
   background: var(--deep-purple);
 }
 
-/* --- Floating Background 3D Flashcards --- */
-/* Purely decorative: fixed + low z-index keeps them behind all real
-   content, pointer-events:none keeps them from ever intercepting clicks.
-   Structure is a real two-sided card: .float-card gives perspective,
-   .float-card-inner is what actually rotates (in Home.jsx), and the two
-   .float-card-face children are positioned back-to-back via
-   backface-visibility so only one is ever visible at a time as it spins.
-   isolation:isolate is what keeps the mouse-follower orb's
-   mix-blend-mode:difference from reaching in and inverting these — it
-   creates a stacking boundary the blend can't cross. */
-.float-card {
-  position: fixed;
-  width: 150px;
-  height: 210px;
-  perspective: 1200px;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.28;
-  isolation: isolate;
-}
-
-.float-card-inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-}
-
-.float-card-face {
-  position: absolute;
-  inset: 0;
-  border-radius: 20px;
-  background-size: cover;
-  background-position: center;
-  background-color: var(--deep-purple); /* visible fallback until you add real images */
-  backface-visibility: hidden;
-  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.4); /* gives the fallback color some depth before real images land */
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.float-card-back {
-  transform: rotateY(180deg);
-}
-
-/* Cards 1 and 4 are the "near-vertical" pair — barely tilted, and smaller
-   than the other three (see the size override further down). */
-.float-card-small {
-  width: 110px;
-  height: 150px;
-}
-
-/* Each card also has a fixed 2D slant (rotate) alongside the 3D flip, and
-   is positioned with enough room around it that none of the five overlap.
-   Replace the front/back url()s with your real images — they can be the
-   same image on both faces or two different ones. */
-.float-card-1 { top: 5%; left: -10px; transform: rotate(-2deg); }
-.float-card-1 .float-card-front { background-image: url("/Users/abhi/main/coding/vscode/rdbweb/testimg.png"); }
-.float-card-1 .float-card-back  { background-image: url("/Users/abhi/main/coding/vscode/rdbweb/testimg.png"); }
-
-.float-card-2 { top: 60%; right: -20px; transform: rotate(7deg); }
-.float-card-2 .float-card-front { background-image: url("/Users/abhi/main/coding/vscode/rdbweb/testimg.png"); }
-.float-card-2 .float-card-back  { background-image: url("/Users/abhi/main/coding/vscode/rdbweb/testimg.png"); }
-
-.float-card-3 { bottom: 4%; left: 14%; transform: rotate(5deg); }
-.float-card-3 .float-card-front { background-image: url("/Users/abhi/main/coding/vscode/rdbweb/testimg.png"); }
-.float-card-3 .float-card-back  { background-image: url("/Users/abhi/main/coding/vscode/rdbweb/testimg.png"); }
-
-.float-card-4 { top: 10%; right: 18%; transform: rotate(2deg); }
-.float-card-4 .float-card-front { background-image: url("/Users/abhi/main/coding/vscode/rdbweb/testimg.png"); }
-.float-card-4 .float-card-back  { background-image: url("/Users/abhi/main/coding/vscode/rdbweb/testimg.png"); }
-
-.float-card-5 { bottom: 32%; right: 4%; transform: rotate(8deg); }
-.float-card-5 .float-card-front { background-image: url("/Users/abhi/main/coding/vscode/rdbweb/testimg.png"); }
-.float-card-5 .float-card-back  { background-image: url("/Users/abhi/main/coding/vscode/rdbweb/testimg.png"); }
-
 /* --- Ambient Glowing Orbs --- */
 .glow-orb {
   position: absolute;
@@ -298,82 +223,39 @@ span {
 }
 
 .feature p {
-  color: rgba(242, 240, 246, 0.6);
+  color: rgba(13, 13, 13, 0.6);
 }
 
-/* --- Pinned Section: Infinite Vertical Flashcard Loop --- */
-.pin-section {
-  width: 100%;
-  height: 100vh;
+/* --- Circular photo carousel --- */
+.carousel-section {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 24px;
-  overflow: hidden;
+  z-index: 10001;
+  isolation: isolate;
+  padding: 88px 20px 72px;
+  text-align: center;
 }
 
-/* The visible "window" onto the loop — CONTAINER_HEIGHT in the JS must
-   match this height. Cards outside this box are simply clipped by
-   overflow:hidden, which is what makes the loop look seamless. */
-.flashcard-viewport {
-  position: relative;
-  width: min(94vw, 680px);
-  height: 760px;
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    black 15%,
-    black 85%,
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    black 15%,
-    black 85%,
-    transparent 100%
-  );
-}
-
-.flashcard-track {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-/* Each card is absolutely positioned and moved purely via GSAP's `y`
-   transform in the ScrollTrigger onUpdate — CARD_STEP in the JS (300px)
-   must equal this height (280px) plus the gap below (20px). */
-.flashcard {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 280px;
-  margin-bottom: 20px;
-  box-sizing: border-box;
-  padding: 36px;
-  border-radius: 24px;
-  background: linear-gradient(135deg, rgba(58, 12, 164, 0.35), rgba(3, 7, 30, 0.6));
-  border: 1px solid rgba(58, 12, 164, 0.45);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.flashcard-index {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--pink);
-  letter-spacing: 1px;
-}
-
-.flashcard p {
-  font-size: 22px;
-  line-height: 1.5;
-  color: var(--text);
+.carousel-heading h2 {
   margin: 0;
+  color: #000;
+  font-size: clamp(2rem, 5vw, 3.25rem);
+}
+
+.carousel-frame {
+  position: relative;
+  width: min(100%, 1040px);
+  height: min(68vh, 650px);
+  min-height: 480px;
+  margin: 18px auto 0;
+}
+
+@media (max-width: 600px) {
+  .carousel-section {
+    padding: 64px 12px 48px;
+  }
+
+  .carousel-frame {
+    height: 520px;
+    min-height: 0;
+  }
 }

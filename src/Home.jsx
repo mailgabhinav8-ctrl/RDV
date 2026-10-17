@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import CircularCarousel from "./CircularCarousel";
 import "./Home.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -48,27 +49,6 @@ export default function Home({ onRegister = () => console.log("Register clicked"
         onComplete: () => {
           gsap.set(".loader", { display: "none" }); // fully out of the way once done
         },
-      });
-
-      // --- Floating background 3D flashcards: each is a real two-sided
-      // card (front + back face, both with their own image — see the CSS
-      // for the placeholder url()s) that continuously flips end over end.
-      // Rotating `.float-card-inner` (not the faces individually) is what
-      // keeps front/back moving together as one rigid card in 3D space.
-      gsap.utils.toArray(".float-card-inner").forEach((el, i) => {
-        gsap.to(el, {
-          rotateY: 360,
-          duration: 14 + i * 4, // stagger speeds so they don't sync up
-          repeat: -1,
-          ease: "none",
-        });
-        gsap.to(el.parentElement, {
-          y: "+=25",
-          duration: 5 + i,
-          repeat: -1,
-          yoyo: true,
-          ease: "sine.inOut",
-        });
       });
 
       // --- Orb: locks at the last mouse position once scroll passes 20%
@@ -148,54 +128,6 @@ export default function Home({ onRegister = () => console.log("Register clicked"
         });
       });
 
-      // --- Infinite vertical flashcard loop, driven entirely by scroll ---
-      // These two constants must match the CSS: CARD_STEP is card height +
-      // the gap between cards, CONTAINER_HEIGHT is .flashcard-viewport's
-      // height. Keeping them here (rather than measuring the DOM) keeps
-      // the math simple and predictable.
-      const CARD_STEP = 300; // 280px card + 20px gap
-      const CONTAINER_HEIGHT = 760;
-      const cards = gsap.utils.toArray(".flashcard");
-      const loopHeight = cards.length * CARD_STEP;
-      const centerY = CONTAINER_HEIGHT / 2;
-
-      ScrollTrigger.create({
-        trigger: ".pin-section",
-        start: "top top",
-        end: "+=2000", // more runway = more scrolling needed per full loop
-        pin: true,
-        scrub: 1,
-        onUpdate: (self) => {
-          // How far the stack has "virtually" scrolled. The *3 just
-          // controls how many full loops happen across the pin's total
-          // scroll distance — raise it to cycle faster, lower to cycle
-          // slower.
-          const virtualScroll = self.progress * loopHeight * 3;
-
-          cards.forEach((card, i) => {
-            const base = i * CARD_STEP;
-            // wrap() is what makes this infinite: once a card's position
-            // would go negative or past loopHeight, it seamlessly re-enters
-            // from the other side instead of stopping.
-            const y = gsap.utils.wrap(0, loopHeight, base - virtualScroll);
-
-            // Fade/scale cards down as they move away from dead-center,
-            // so the centered card reads as the "active" flashcard.
-            const cardCenter = y + CARD_STEP / 2;
-            const distanceRatio = gsap.utils.clamp(
-              0,
-              1,
-              Math.abs(cardCenter - centerY) / centerY
-            );
-
-            gsap.set(card, {
-              y,
-              opacity: 1 - distanceRatio * 0.75,
-              scale: 1 - distanceRatio * 0.15,
-            });
-          });
-        },
-      });
     }, rootRef);
 
     return () => {
@@ -203,14 +135,6 @@ export default function Home({ onRegister = () => console.log("Register clicked"
       window.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
-
-  const flashcards = [
-    { title: "01", body: "Swap this copy for your real content." },
-    { title: "02", body: "Each card is a fixed step apart, looping forever." },
-    { title: "03", body: "Position is driven purely by scroll progress." },
-    { title: "04", body: "No drag, no autoplay — just the scrollbar." },
-    { title: "05", body: "Scroll back up and it reverses cleanly too." },
-  ];
 
   // 6 columns x 6 rows = 36 blocks — adjust grid-template-columns/-rows in
   // Home.css AND the stagger's grid:[6,6] above if you change this count.
@@ -225,29 +149,6 @@ export default function Home({ onRegister = () => console.log("Register clicked"
           <div className="loader-block" key={i} />
         ))}
       </div>
-
-      {/* Floating decorative 3D flashcards — purely background, sits
-          behind everything, ignores clicks. Each card has a front and
-          back face (both filled, neither left blank) that flip together
-          as it rotates. Cards 1 and 4 are near-vertical (barely tilted)
-          and smaller than the rest — see .float-card-small in the CSS.
-          Swap the background-image url()s in Home.css (.float-card-1
-          through -5) for your real images — front/back per card can be
-          the same image or two different ones. */}
-      {[1, 2, 3, 4, 5].map((n) => (
-        <div
-          className={`float-card float-card-${n} ${
-            n === 1 || n === 4 ? "float-card-small" : ""
-          }`}
-          key={n}
-          aria-hidden="true"
-        >
-          <div className="float-card-inner">
-            <div className="float-card-face float-card-front" />
-            <div className="float-card-face float-card-back" />
-          </div>
-        </div>
-      ))}
 
       {/* Target layer element for cursor engine */}
       <div className="mouse-follower" aria-hidden="true" />
@@ -301,17 +202,21 @@ export default function Home({ onRegister = () => console.log("Register clicked"
         </section>
       </div>
 
-      {/* Infinite vertical flashcard scroller, entirely scroll-driven */}
-      <section className="pin-section">
-        <div className="flashcard-viewport">
-          <div className="flashcard-track">
-            {flashcards.map((card, i) => (
-              <div className="flashcard" key={i}>
-                <span className="flashcard-index">{card.title}</span>
-                <p>{card.body}</p>
-              </div>
-            ))}
-          </div>
+      <section className="carousel-section">
+        <div className="carousel-heading">
+          <p className="hero-eyebrow">A rotating gallery</p>
+          <h2>Explore the collection</h2>
+        </div>
+        <div className="carousel-frame">
+          <CircularCarousel
+            preset="cylinder"
+            intro="rise"
+            cardWidth={250}
+            aspectRatio={1}
+            speed={10}
+            captions
+            gap={28}
+          />
         </div>
       </section>
 
@@ -321,6 +226,8 @@ export default function Home({ onRegister = () => console.log("Register clicked"
           [ Register ]
         </button>
       </section>
+
+
     </div>
   );
 }

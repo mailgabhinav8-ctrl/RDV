@@ -22,10 +22,10 @@ export default function Reg() {
   return (
     <div className="reg">
       <nav className="topnav">
-        <button className="topnav-btn" onClick={() => navigate("/")}>
+        <button className="topnav-btn">
           Session
         </button>
-        <button className="topnav-btn">Menu</button>
+        <button className="topnav-btn" onClick={() => navigate("/")}>Menu</button>
       </nav>
 
       <section className="reg-hero">
