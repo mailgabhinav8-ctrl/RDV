@@ -1,0 +1,379 @@
+/* --- Palette --- */
+:root {
+  --deep-purple: #3a0ca4;
+  --pink: #ff1873;
+  --near-black: #03071e;
+  --cyan: #03ffe7;
+  --red: #e30a17;
+  --text: #f2f0f6; /* not from the palette — kept neutral/light purely for
+                       body-copy legibility on a near-black background */
+}
+
+/* --- Global Body Overrides for Smooth Blends --- */
+body {
+  margin: 0;
+  background-color: var(--near-black);
+  background-image: radial-gradient(circle at 50% 30%, #180a44 0%, var(--near-black) 70%);
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@font-face {
+  font-family: 'Gatuzo'; 
+  src: url('font/GCGatuzoDemo-ExtraBold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+.gatuzo{
+  font-family: 'Gatuzo',sans-serif;
+}
+
+::selection {
+  background: var(--deep-purple);
+  color: var(--text);
+}
+
+/* Keyboard-focus visibility across every interactive element on the site
+   — none of the buttons/inputs had a visible focus state before this. */
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+/* --- Block-Grid Loading Screen --- */
+/* Sits above absolutely everything (including the 9999 orb) until it
+   dissolves. grid-template here (6x6=36) must match LOADER_BLOCK_COUNT
+   and the stagger's grid:[6,6] in Home.jsx. pointer-events:none so it
+   never blocks a click even in the split second before it starts fading. */
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  pointer-events: none;
+}
+
+.loader-block {
+  background: var(--deep-purple);
+}
+
+/* --- Floating Background 3D Flashcards --- */
+/* Purely decorative: fixed + low z-index keeps them behind all real
+   content, pointer-events:none keeps them from ever intercepting clicks.
+   Structure is a real two-sided card: .float-card gives perspective,
+   .float-card-inner is what actually rotates (in Home.jsx), and the two
+   .float-card-face children are positioned back-to-back via
+   backface-visibility so only one is ever visible at a time as it spins.
+   isolation:isolate is what keeps the mouse-follower orb's
+   mix-blend-mode:difference from reaching in and inverting these — it
+   creates a stacking boundary the blend can't cross. */
+.float-card {
+  position: fixed;
+  width: 150px;
+  height: 210px;
+  perspective: 1200px;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.28;
+  isolation: isolate;
+}
+
+.float-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+.float-card-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--deep-purple); /* visible fallback until you add real images */
+  backface-visibility: hidden;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.4); /* gives the fallback color some depth before real images land */
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.float-card-back {
+  transform: rotateY(180deg);
+}
+
+/* Cards 1 and 4 are the "near-vertical" pair — barely tilted, and smaller
+   than the other three (see the size override further down). */
+.float-card-small {
+  width: 110px;
+  height: 150px;
+}
+
+/* Each card also has a fixed 2D slant (rotate) alongside the 3D flip, and
+   is positioned with enough room around it that none of the five overlap.
+   Replace the front/back url()s with your real images — they can be the
+   same image on both faces or two different ones. */
+.float-card-1 { top: 5%; left: -10px; transform: rotate(-2deg); }
+.float-card-1 .float-card-front { background-image: url("/Users/abhi/main/coding/vscode/rdbweb/testimg.png"); }
+.float-card-1 .float-card-back  { background-image: url("/Users/abhi/main/coding/vscode/rdbweb/testimg.png"); }
+
+.float-card-2 { top: 60%; right: -20px; transform: rotate(7deg); }
+.float-card-2 .float-card-front { background-image: url("/Users/abhi/main/coding/vscode/rdbweb/testimg.png"); }
+.float-card-2 .float-card-back  { background-image: url("/Users/abhi/main/coding/vscode/rdbweb/testimg.png"); }
+
+.float-card-3 { bottom: 4%; left: 14%; transform: rotate(5deg); }
+.float-card-3 .float-card-front { background-image: url("/Users/abhi/main/coding/vscode/rdbweb/testimg.png"); }
+.float-card-3 .float-card-back  { background-image: url("/Users/abhi/main/coding/vscode/rdbweb/testimg.png"); }
+
+.float-card-4 { top: 10%; right: 18%; transform: rotate(2deg); }
+.float-card-4 .float-card-front { background-image: url("/Users/abhi/main/coding/vscode/rdbweb/testimg.png"); }
+.float-card-4 .float-card-back  { background-image: url("/Users/abhi/main/coding/vscode/rdbweb/testimg.png"); }
+
+.float-card-5 { bottom: 32%; right: 4%; transform: rotate(8deg); }
+.float-card-5 .float-card-front { background-image: url("/Users/abhi/main/coding/vscode/rdbweb/testimg.png"); }
+.float-card-5 .float-card-back  { background-image: url("/Users/abhi/main/coding/vscode/rdbweb/testimg.png"); }
+
+/* --- Ambient Glowing Orbs --- */
+.glow-orb {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(80px);
+}
+.glow-top {
+  top: -100px;
+  right: -100px;
+  background: radial-gradient(circle, rgba(58, 12, 164, 0.5) 0%, rgba(58, 12, 164, 0) 70%);
+}
+.glow-bottom {
+  bottom: 20%;
+  left: -200px;
+  background: radial-gradient(circle, rgba(3, 255, 231, 0.22) 0%, rgba(3, 255, 231, 0) 70%);
+}
+
+/* --- Fixed Blender Pointer Layout --- */
+.mouse-follower {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 64px;
+  height: 64px;
+  background-color: #ffffff; /* white on purpose — mix-blend-mode: difference
+                                 needs a bright top layer to produce a clear
+                                 inversion; a dark fill (like deep-purple)
+                                 barely changes against a dark background,
+                                 which is why it looked "not inverting" */
+  border-radius: 50%;
+  pointer-events: none;       
+  z-index: 9999;              
+  will-change: transform, width, height, filter, opacity; 
+  
+  opacity: 0.8;               
+  mix-blend-mode: difference; 
+}
+
+/* --- Anti-isolation fix for text structures --- */
+.hero-title, 
+.hero-eyebrow, 
+.hero-sub, 
+.topnav-btn,
+h2, 
+p, 
+span {
+  position: relative;
+  z-index: 2;
+  isolation: auto !important; 
+}
+
+/* --- Hero Layout Styles --- */
+.home {
+  position: relative;
+  width: 100%;
+}
+
+.topnav {
+  display: flex;
+  justify-content: space-between;
+  padding: 30px;
+}
+
+/* Session/Menu — the one pair of buttons that stays pinned to its
+   corners rather than being centered like everything else on the page. */
+.topnav-btn {
+  background: none;
+  border: 1px solid rgba(242, 240, 246, 0.3);
+  color: var(--text);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.topnav-btn:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.hero {
+  padding: 60px 30px;
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.hero-eyebrow {
+  font-size: 14px;
+  color: var(--pink);
+  opacity: 1;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.hero-title-wrap {
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.hero-title {
+  font-size: clamp(3rem, 8vw, 6rem);
+  line-height: 1.1;
+  font-weight: 800;
+  margin: 0;
+  color: var(--red);
+}
+
+.hero-sub {
+  font-size: 18px;
+  line-height: 1.6;
+  max-width: 500px;
+  margin-bottom: 40px;
+  color: rgba(242, 240, 246, 0.6);
+  opacity: 1;
+}
+
+.hero-cta {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0;
+  font-weight: bold;
+  transition: color 0.2s ease;
+  display: block;
+  margin: 0 auto;
+}
+
+.hero-cta:hover {
+  color: var(--cyan);
+}
+
+/* --- General Content Features --- */
+.feature {
+  padding: 100px 30px;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.feature h2 {
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: var(--text);
+}
+
+.feature p {
+  color: rgba(242, 240, 246, 0.6);
+}
+
+/* --- Pinned Section: Infinite Vertical Flashcard Loop --- */
+.pin-section {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  overflow: hidden;
+}
+
+/* The visible "window" onto the loop — CONTAINER_HEIGHT in the JS must
+   match this height. Cards outside this box are simply clipped by
+   overflow:hidden, which is what makes the loop look seamless. */
+.flashcard-viewport {
+  position: relative;
+  width: min(94vw, 680px);
+  height: 760px;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 15%,
+    black 85%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 15%,
+    black 85%,
+    transparent 100%
+  );
+}
+
+.flashcard-track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Each card is absolutely positioned and moved purely via GSAP's `y`
+   transform in the ScrollTrigger onUpdate — CARD_STEP in the JS (300px)
+   must equal this height (280px) plus the gap below (20px). */
+.flashcard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 280px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  padding: 36px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(58, 12, 164, 0.35), rgba(3, 7, 30, 0.6));
+  border: 1px solid rgba(58, 12, 164, 0.45);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.flashcard-index {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--pink);
+  letter-spacing: 1px;
+}
+
+.flashcard p {
+  font-size: 22px;
+  line-height: 1.5;
+  color: var(--text);
+  margin: 0;
+}

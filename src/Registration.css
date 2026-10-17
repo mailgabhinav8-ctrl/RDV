@@ -1,0 +1,98 @@
+/* Reuses the palette variables and body/.topnav-btn rules already defined
+   in Home.css — both files get bundled into the same page regardless of
+   which route is active, so there's no need to redeclare :root here. */
+
+.reg {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.reg-hero {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 80px 30px 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.reg-eyebrow {
+  font-size: 14px;
+  color: var(--pink);
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.reg-title {
+  font-size: clamp(2.4rem, 6vw, 3.6rem);
+  line-height: 1.1;
+  font-weight: 800;
+  margin: 0 0 20px;
+  color: var(--red);
+}
+
+.reg-sub {
+  font-size: 17px;
+  line-height: 1.6;
+  color: rgba(242, 240, 246, 0.6);
+  margin: 0 0 40px;
+}
+
+.reg-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.reg-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.reg-field span {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(242, 240, 246, 0.6);
+}
+
+.reg-field input {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(58, 12, 164, 0.45);
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 16px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.reg-field input::placeholder {
+  color: rgba(242, 240, 246, 0.35);
+}
+
+.reg-field input:focus {
+  border-color: var(--cyan);
+}
+
+.reg-cta {
+  margin-top: 12px;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.reg-cta:hover {
+  color: var(--cyan);
+}
