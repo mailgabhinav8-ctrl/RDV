@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouteTransition } from "./RouteTransitionContext";
 import "./Registration.css";
 
 export default function Reg() {
-  const navigate = useNavigate();
+  const transitionTo = useRouteTransition();
   const [form, setForm] = useState({ name: "", email: "" });
   const [submitted, setSubmitted] = useState(false);
 
@@ -25,7 +25,7 @@ export default function Reg() {
         <button className="topnav-btn">
           Session
         </button>
-        <button className="topnav-btn" onClick={() => navigate("/")}>Menu</button>
+        <button className="topnav-btn" onClick={() => transitionTo("/")}>Menu</button>
       </nav>
 
       <section className="reg-hero">
@@ -38,7 +38,7 @@ export default function Reg() {
               Keep an eye out — seats are capped and links aren't
               transferable.
             </p>
-            <button className="reg-cta" onClick={() => navigate("/")}>
+            <button className="reg-cta" onClick={() => transitionTo("/")}>
               [ Back to home ]
             </button>
           </>

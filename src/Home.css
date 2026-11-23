@@ -1,19 +1,21 @@
 /* --- Palette --- */
 :root {
-  --deep-purple: #3a0ca4;
-  --pink: #ff1873;
-  --near-black: #03071e;
-  --cyan: #03ffe7;
-  --red: #e30a17;
-  --text: #f2f0f6; /* not from the palette — kept neutral/light purely for
-                       body-copy legibility on a near-black background */
+  --burgundy: #800020;
+  --teal: #0F3F49;
+  --black: #000000;
+  --porcelain: #FCFBF4;
+  --text: var(--porcelain);
+  --muted: rgba(252, 251, 244, 0.72);
 }
 
 /* --- Global Body Overrides for Smooth Blends --- */
 body {
   margin: 0;
-  background-color: var(--near-black);
-  background-image: radial-gradient(circle at 50% 30%, #180a44 0%, var(--near-black) 70%);
+  background-color: var(--burgundy);
+  background-image:
+    radial-gradient(ellipse at 12% 18%, rgba(15, 63, 73, 0.78) 0%, transparent 42%),
+    radial-gradient(ellipse at 88% 76%, rgba(0, 0, 0, 0.42) 0%, transparent 46%),
+    radial-gradient(circle at 50% 30%, var(--burgundy) 0%, #65001a 100%);
   background-attachment: fixed;
   color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -33,7 +35,7 @@ body {
 }
 
 ::selection {
-  background: var(--deep-purple);
+  background: var(--teal);
   color: var(--text);
 }
 
@@ -41,7 +43,7 @@ body {
    — none of the buttons/inputs had a visible focus state before this. */
 button:focus-visible,
 input:focus-visible {
-  outline: 2px solid var(--cyan);
+  outline: 2px solid var(--porcelain);
   outline-offset: 3px;
 }
 
@@ -61,7 +63,22 @@ input:focus-visible {
 }
 
 .loader-block {
-  background: var(--deep-purple);
+  background: var(--burgundy);
+}
+
+.route-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 10002;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  pointer-events: none;
+}
+
+.route-transition-block {
+  background: var(--burgundy);
+  opacity: 0;
 }
 
 /* --- Ambient Glowing Orbs --- */
@@ -76,12 +93,12 @@ input:focus-visible {
 .glow-top {
   top: -100px;
   right: -100px;
-  background: radial-gradient(circle, rgba(58, 12, 164, 0.5) 0%, rgba(58, 12, 164, 0) 70%);
+  background: radial-gradient(circle, rgba(15, 63, 73, 0.72) 0%, rgba(15, 63, 73, 0) 70%);
 }
 .glow-bottom {
   bottom: 20%;
   left: -200px;
-  background: radial-gradient(circle, rgba(3, 255, 231, 0.22) 0%, rgba(3, 255, 231, 0) 70%);
+  background: radial-gradient(circle, rgba(252, 251, 244, 0.18) 0%, rgba(252, 251, 244, 0) 70%);
 }
 
 /* --- Fixed Blender Pointer Layout --- */
@@ -91,18 +108,14 @@ input:focus-visible {
   left: 0;
   width: 64px;
   height: 64px;
-  background-color: #ffffff; /* white on purpose — mix-blend-mode: difference
-                                 needs a bright top layer to produce a clear
-                                 inversion; a dark fill (like deep-purple)
-                                 barely changes against a dark background,
-                                 which is why it looked "not inverting" */
+  background-color: var(--porcelain);
   border-radius: 50%;
   pointer-events: none;       
   z-index: 9999;              
   will-change: transform, width, height, filter, opacity; 
   
   opacity: 0.8;               
-  mix-blend-mode: difference; 
+  mix-blend-mode: normal;
 }
 
 /* --- Anti-isolation fix for text structures --- */
@@ -134,7 +147,7 @@ span {
    corners rather than being centered like everything else on the page. */
 .topnav-btn {
   background: none;
-  border: 1px solid rgba(242, 240, 246, 0.3);
+  border: 1px solid rgba(252, 251, 244, 0.38);
   color: var(--text);
   font-weight: 600;
   text-transform: uppercase;
@@ -147,8 +160,8 @@ span {
 }
 
 .topnav-btn:hover {
-  border-color: var(--cyan);
-  color: var(--cyan);
+  border-color: var(--porcelain);
+  color: var(--porcelain);
 }
 
 .hero {
@@ -163,7 +176,7 @@ span {
 
 .hero-eyebrow {
   font-size: 14px;
-  color: var(--pink);
+  color: var(--porcelain);
   opacity: 1;
   margin-bottom: 20px;
   font-weight: 600;
@@ -179,7 +192,7 @@ span {
   line-height: 1.1;
   font-weight: 800;
   margin: 0;
-  color: var(--red);
+  color: var(--porcelain);
 }
 
 .hero-sub {
@@ -187,7 +200,7 @@ span {
   line-height: 1.6;
   max-width: 500px;
   margin-bottom: 40px;
-  color: rgba(242, 240, 246, 0.6);
+  color: var(--muted);
   opacity: 1;
 }
 
@@ -205,7 +218,7 @@ span {
 }
 
 .hero-cta:hover {
-  color: var(--cyan);
+  color: var(--porcelain);
 }
 
 /* --- General Content Features --- */
@@ -223,7 +236,7 @@ span {
 }
 
 .feature p {
-  color: rgba(13, 13, 13, 0.6);
+  color: var(--muted);
 }
 
 /* --- Circular photo carousel --- */
@@ -237,7 +250,7 @@ span {
 
 .carousel-heading h2 {
   margin: 0;
-  color: #000;
+  color: var(--porcelain);
   font-size: clamp(2rem, 5vw, 3.25rem);
 }
 

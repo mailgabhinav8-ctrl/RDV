@@ -1,15 +1,15 @@
 import { useLayoutEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import CircularCarousel from "./CircularCarousel";
+import { useRouteTransition } from "./RouteTransitionContext";
 import "./Home.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function Home({ onRegister = () => console.log("Register clicked") }) {
+export default function Home() {
   const rootRef = useRef(null);
-  const navigate = useNavigate();
+  const transitionTo = useRouteTransition();
 
   useLayoutEffect(() => {
     // Declared outside gsap.context so the cleanup function below can
@@ -43,7 +43,7 @@ export default function Home({ onRegister = () => console.log("Register clicked"
         stagger: {
           each: 0.06,
           from: "edges",
-          grid: [8, 8], // must match LOADER_BLOCK_COUNT's rows/cols below
+          grid: [6, 6], // matches the 6x6 loader grid below
         },
         delay: 0.8, // brief pause so the solid grid is visible first
         onComplete: () => {
@@ -180,7 +180,7 @@ export default function Home({ onRegister = () => console.log("Register clicked"
             this is a paragraph 
           </p>
 
-          <button className="hero-cta" onClick={() => navigate("/register")}>
+          <button className="hero-cta" onClick={() => transitionTo("/register")}>
             [ Register ]
           </button>
         </section>
@@ -222,7 +222,7 @@ export default function Home({ onRegister = () => console.log("Register clicked"
 
       <section className="feature reveal">
         <h2>Ready when you are</h2>
-        <button className="hero-cta" onClick={onRegister}>
+        <button className="hero-cta" onClick={() => transitionTo("/register")}>
           [ Register ]
         </button>
       </section>

@@ -20,7 +20,7 @@
 
 .reg-eyebrow {
   font-size: 14px;
-  color: var(--pink);
+  color: var(--porcelain);
   font-weight: 600;
   margin-bottom: 20px;
 }
@@ -30,13 +30,13 @@
   line-height: 1.1;
   font-weight: 800;
   margin: 0 0 20px;
-  color: var(--red);
+  color: var(--porcelain);
 }
 
 .reg-sub {
   font-size: 17px;
   line-height: 1.6;
-  color: rgba(242, 240, 246, 0.6);
+  color: var(--muted);
   margin: 0 0 40px;
 }
 
@@ -59,12 +59,12 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: rgba(242, 240, 246, 0.6);
+  color: var(--muted);
 }
 
 .reg-field input {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(58, 12, 164, 0.45);
+  background: rgba(0, 0, 0, 0.24);
+  border: 1px solid rgba(252, 251, 244, 0.32);
   border-radius: 12px;
   padding: 14px 16px;
   font-size: 16px;
@@ -74,11 +74,11 @@
 }
 
 .reg-field input::placeholder {
-  color: rgba(242, 240, 246, 0.35);
+  color: rgba(252, 251, 244, 0.48);
 }
 
 .reg-field input:focus {
-  border-color: var(--cyan);
+  border-color: var(--porcelain);
 }
 
 .reg-cta {
@@ -94,5 +94,5 @@
 }
 
 .reg-cta:hover {
-  color: var(--cyan);
+  color: var(--porcelain);
 }
